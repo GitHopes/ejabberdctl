@@ -420,7 +420,7 @@ class CLIInstaller:
         """Configura y compila ejabberd."""
         self.log_msg("━━━  PASO 3: Compilación  ━━━", "section")
         cmds = [
-            f"cd {ejdir} && export CFLAGS='-O2 -std=gnu17' && "
+            f"cd {ejdir} && ./autogen.sh && export CFLAGS='-O2 -std=gnu17' && "
             "./configure --prefix=/usr/local/ejabberd --enable-sqlite --enable-user=ejabberd --enable-all",
             f"cd {ejdir} && make",
             f"cd {ejdir} && sudo make install",
