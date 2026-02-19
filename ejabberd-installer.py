@@ -389,7 +389,7 @@ class CLIInstaller:
                 "libssl-dev automake git erlang-dev erlang-reltool erlang-asn1 "
                 "erlang-public-key erlang-ssl erlang-syntax-tools erlang-runtime-tools "
                 "erlang-nox erlang-observer erlang-inets erlang-debugger erlang-wx "
-                "erlang-os-mon elixir libpam0g-dev zlib1g-dev sqlite-dev"
+                "erlang-os-mon elixir libpam0g-dev zlib1g-dev libsqlite3-dev"
             ),
         ]
         for cmd in cmds:
