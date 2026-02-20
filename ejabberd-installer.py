@@ -296,8 +296,8 @@ class CLIInstaller:
             self.log_msg("╔══ INSTALACIÓN COMPLETA DE EJABBERD ══╗", "head")
             self._step_deps(p)
             ejdir = self._step_clone(p)
-            self._step_build(ejdir, p)
             self._step_user(p)
+            self._step_build(ejdir, p)
             self._step_etc_hosts(p)
             self._step_yaml(p)
             self._step_cert(p)
@@ -1119,25 +1119,10 @@ if HAS_GUI:
                     raise RuntimeError("Fallo al clonar el repositorio ejabberd.")
             self.log_msg("✔ Código fuente listo.", "ok")
             return ejdir
-
-        def _step_build(self, ejdir: Path, p: dict):
-            """Configura y compila ejabberd."""
-            self.log_msg("━━━  PASO 3: Compilación  ━━━", "section")
-            cmds = [
-                f"cd {ejdir} && export CFLAGS='-O2 -std=gnu17' && "
-                "./configure --prefix=/usr/local/ejabberd --enable-sqlite --enable-user=ejabberd --enable-all",
-                f"cd {ejdir} && make",
-                f"cd {ejdir} && sudo make install",
-            ]
-            for cmd in cmds:
-                rc, _ = run_cmd(cmd, self.log_msg, p["sudo_pass"])
-                if rc != 0:
-                    raise RuntimeError(f"Fallo de compilación: {cmd}")
-            self.log_msg("✔ ejabberd compilado e instalado.", "ok")
-
+            
         def _step_user(self, p: dict):
             """Crea el usuario del sistema ejabberd."""
-            self.log_msg("━━━  PASO 4: Usuario del sistema  ━━━", "section")
+            self.log_msg("━━━  PASO 3: Usuario del sistema  ━━━", "section")
             rc, out = run_cmd(
                 "id ejabberd", self.log_msg, p["sudo_pass"]
             )
@@ -1149,6 +1134,21 @@ if HAS_GUI:
                     self.log_msg, p["sudo_pass"]
                 )
             self.log_msg("✔ Usuario listo.", "ok")
+
+        def _step_build(self, ejdir: Path, p: dict):
+            """Configura y compila ejabberd."""
+            self.log_msg("━━━  PASO 4: Compilación  ━━━", "section")
+            cmds = [
+                f"cd {ejdir} && export CFLAGS='-O2 -std=gnu17' && "
+                "./configure --prefix=/usr/local/ejabberd --enable-sqlite --enable-user=ejabberd --enable-all",
+                f"cd {ejdir} && make",
+                f"cd {ejdir} && sudo make install",
+            ]
+            for cmd in cmds:
+                rc, _ = run_cmd(cmd, self.log_msg, p["sudo_pass"])
+                if rc != 0:
+                    raise RuntimeError(f"Fallo de compilación: {cmd}")
+            self.log_msg("✔ ejabberd compilado e instalado.", "ok")
 
         def _step_yaml(self, p: dict):
             """Escribe/actualiza ejabberd.yml con los parámetros del usuario."""
@@ -1489,8 +1489,8 @@ if HAS_GUI:
             try:
                 self._step_deps(p)
                 ejdir = self._step_clone(p)
-                self._step_build(ejdir, p)
                 self._step_user(p)
+                self._step_build(ejdir, p)
                 self._step_etc_hosts(p)
                 self._step_yaml(p)
                 self._step_cert(p)
